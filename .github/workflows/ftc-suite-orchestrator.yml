@@ -1,0 +1,131 @@
+name: FTC Suite Orchestrator
+
+on:
+  workflow_dispatch:
+    inputs:
+      test_env_file:
+        description: 'Test environment file to use'
+        required: false
+        default: '../common/test_env-oran-m-release.sh'
+        type: choice
+        options:
+          - '../common/test_env-oran-m-release.sh'
+          - '../common/test_env-oran-l-release.sh'
+          - '../common/test_env-oran-k-release.sh'
+          - '../common/test_env-onap-paris.sh'
+          - '../common/test_env-onap-oslo.sh'
+          - '../common/test_env-onap-montreal.sh'
+          - '../common/test_env-onap-newdelhi.sh'
+      execution_mode:
+        description: 'Execution mode'
+        required: false
+        default: 'remote docker'
+        type: choice
+        options:
+          - 'remote docker'
+          - 'remote-remove docker'
+      test_selection:
+        description: 'Which tests to run'
+        required: true
+        default: 'all'
+        type: choice
+        options:
+          - 'all'
+          - 'standard-only'
+          - 'long-running-only'
+
+jobs:
+  trigger-all-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Trigger All FTC Workflows
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: |
+        # Define all FTC tests from Suite-policy-all.sh
+        declare -A FTC_WORKFLOWS
+        FTC_WORKFLOWS["FTC1"]="ftc-001.yml"
+        FTC_WORKFLOWS["FTC10"]="ftc-010.yml"
+        FTC_WORKFLOWS["FTC100"]="ftc-100.yml"
+        FTC_WORKFLOWS["FTC110"]="ftc-110.yml"
+        FTC_WORKFLOWS["FTC150"]="ftc-150.yml"
+        FTC_WORKFLOWS["FTC300"]="ftc-300.yml"
+        FTC_WORKFLOWS["FTC310"]="ftc-310.yml"
+        FTC_WORKFLOWS["FTC350"]="ftc-350.yml"
+        FTC_WORKFLOWS["FTC800"]="ftc-800.yml"
+        FTC_WORKFLOWS["FTC850"]="ftc-850.yml"
+        
+        # Define test categories
+        STANDARD_TESTS="FTC1 FTC10 FTC110 FTC150 FTC300 FTC310 FTC350 FTC850"
+        LONG_RUNNING_TESTS="FTC100 FTC800"
+        
+        # Determine which tests to run
+        TESTS_TO_RUN=""
+        if [ "${{ inputs.test_selection }}" == "all" ]; then
+          TESTS_TO_RUN="$STANDARD_TESTS $LONG_RUNNING_TESTS"
+        elif [ "${{ inputs.test_selection }}" == "standard-only" ]; then
+          TESTS_TO_RUN="$STANDARD_TESTS"
+        elif [ "${{ inputs.test_selection }}" == "long-running-only" ]; then
+          TESTS_TO_RUN="$LONG_RUNNING_TESTS"
+        fi
+        
+        echo "🚀 Triggering FTC tests: $TESTS_TO_RUN"
+        echo "📋 Environment: ${{ inputs.test_env_file }}"
+        echo "⚙️ Execution Mode: ${{ inputs.execution_mode }}"
+        echo ""
+        
+        # Trigger workflows
+        TRIGGERED_COUNT=0
+        FAILED_COUNT=0
+        
+        for test in $TESTS_TO_RUN; do
+          workflow_file="${FTC_WORKFLOWS[$test]}"
+          echo "Triggering $test using $workflow_file..."
+          
+          # Trigger the workflow
+          response=$(curl -s -w "%{http_code}" -X POST \
+            -H "Authorization: token $GITHUB_TOKEN" \
+            -H "Accept: application/vnd.github.v3+json" \
+            "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$workflow_file/dispatches" \
+            -d "{
+              \"ref\": \"${{ github.ref }}\",
+              \"inputs\": {
+                \"test_env_file\": \"${{ inputs.test_env_file }}\",
+                \"execution_mode\": \"${{ inputs.execution_mode }}\"
+              }
+            }")
+          
+          # Extract HTTP status code (last 3 characters)
+          http_code="${response: -3}"
+          
+          if [ "$http_code" == "204" ] || [ "$http_code" == "200" ]; then
+            echo "✅ Successfully triggered $test (HTTP $http_code)"
+            TRIGGERED_COUNT=$((TRIGGERED_COUNT + 1))
+          else
+            echo "❌ Failed to trigger $test (HTTP $http_code)"
+            FAILED_COUNT=$((FAILED_COUNT + 1))
+          fi
+          
+          # Small delay between triggers to avoid rate limiting
+          sleep 2
+        done
+        
+        echo ""
+        echo "==================== TRIGGER SUMMARY ===================="
+        echo "✅ Successfully triggered: $TRIGGERED_COUNT workflows"
+        echo "❌ Failed to trigger: $FAILED_COUNT workflows"
+        echo "🔗 Check the Actions tab to monitor individual test progress"
+        echo ""
+        echo "💡 Next Steps:"
+        echo "1. Monitor individual FTC workflow runs in the Actions tab"
+        echo "2. After tests complete, run this orchestrator with action='summary'"
+        echo "3. Each test runs in complete Docker isolation on separate runners"
+        echo "=========================================================="
+        
+        if [ $FAILED_COUNT -gt 0 ]; then
+          echo "⚠️ Some workflows failed to trigger. Check GitHub token permissions."
+          exit 1
+        fi
