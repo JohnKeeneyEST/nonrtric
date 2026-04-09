@@ -17,6 +17,7 @@ on:
           - '../common/test_env-onap-oslo.sh'
           - '../common/test_env-onap-montreal.sh'
           - '../common/test_env-onap-newdelhi.sh'
+          - '../common/onap_ftc_job_env.sh'
       execution_mode:
         description: 'Execution mode'
         required: false
