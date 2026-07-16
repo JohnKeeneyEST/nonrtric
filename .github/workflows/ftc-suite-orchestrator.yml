@@ -59,6 +59,8 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       run: |
+        set -o history -o histexpand
+        
         # Define all FTC tests from Suite-policy-all.sh
         declare -A FTC_WORKFLOWS
         FTC_WORKFLOWS["FTC1"]="ftc-001.yml"
@@ -115,6 +117,8 @@ jobs:
                 \"additional_params\": \"${{ inputs.additional_params }}\"
               }
             }")
+
+          echo "Triggered the action with ["!:0"] with arguments ["!:*"]"
           
           # Extract HTTP status code (last 3 characters)
           http_code="${response: -3}"
