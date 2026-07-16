@@ -15,6 +15,14 @@ on:
         description: 'Execution mode'
         required: true
         type: string
+      image_mode:
+        description: 'Image mode (e.g. "release") - optional'
+        required: false
+        type: string
+      additional_params:
+        description: 'Additional directives (e.g. "--use-snapshot-image A1PMS --use-release-image SDNC") - optional'
+        required: false
+        type: string
       timeout_minutes:
         description: 'Timeout in minutes for the test'
         required: false
@@ -148,7 +156,7 @@ jobs:
         
         # Run the test and capture exit code
         set +e  # Don't exit on error, we want to handle it
-        timeout ${{ inputs.timeout_minutes }}m ./${{ inputs.test_case }}.sh ${{ inputs.execution_mode }} --env-file ${{ inputs.test_env_file }} --print-stats --gen-stats --endpoint-stats 2>&1 | tee test_output.log
+        timeout ${{ inputs.timeout_minutes }}m ./${{ inputs.test_case }}.sh ${{ inputs.execution_mode }} ${{ inputs.image_mode }} --env-file ${{ inputs.test_env_file }} ${{ inputs.additional_params }} --print-stats --gen-stats --endpoint-stats 2>&1 | tee test_output.log
         TEST_EXIT_CODE=${PIPESTATUS[0]}
         set -e  # Re-enable exit on error
         

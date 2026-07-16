@@ -25,11 +25,19 @@ on:
       execution_mode:
         description: 'Execution mode'
         required: true
-        default: 'remote docker'
+        default: 'remote-remove docker'
         type: choice
         options:
           - 'remote docker'
           - 'remote-remove docker'
+      image_mode:
+        description: 'Image mode (e.g. "release") - optional'
+        required: false
+        type: string
+      additional_params:
+        description: 'Additional directives (e.g. "--use-snapshot-image A1PMS --use-release-image SDNC") - optional'
+        required: false
+        type: string
 
 jobs:
   ftc110-test:
