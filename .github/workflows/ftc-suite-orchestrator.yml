@@ -104,7 +104,6 @@ jobs:
           echo "Triggering $test using $workflow_file..."
           
           # Trigger the workflow
-          echo "Triggering the action with curl: "
           response=$(curl --no-progress-meter -w "%{http_code}" -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
@@ -126,7 +125,7 @@ jobs:
             echo "✅ Successfully triggered $test (HTTP $http_code)"
             TRIGGERED_COUNT=$((TRIGGERED_COUNT + 1))
           else
-            echo "❌ Failed to trigger $test (HTTP $http_code)"
+            echo "❌ Failed to trigger $test (HTTP $http_code) using curl"
             echo "Full reponse was:"
             echo "$response"
             FAILED_COUNT=$((FAILED_COUNT + 1))
