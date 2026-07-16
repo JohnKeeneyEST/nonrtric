@@ -133,6 +133,8 @@ jobs:
         echo "TEST_INSTANCE_ID=${TEST_INSTANCE_ID}" >> $GITHUB_ENV
         echo "EXECUTION_MODE=${{ inputs.execution_mode }}" >> $GITHUB_ENV
         echo "TEST_ENV_FILE=${{ inputs.test_env_file }}" >> $GITHUB_ENV
+        echo "IMAGE_MODE=${{ inputs.image_mode }}" >> $GITHUB_ENV
+        echo "ADDITIONAL_PARAMS=${{ inputs.additional_params }}" >> $GITHUB_ENV
         echo "WORKSPACE_PATH=${{ github.workspace }}" >> $GITHUB_ENV
         
         # Set unique container prefix to avoid conflicts

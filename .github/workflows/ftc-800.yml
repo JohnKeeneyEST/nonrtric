@@ -46,4 +46,6 @@ jobs:
       test_case: 'FTC800'
       test_env_file: ${{ inputs.test_env_file }}
       execution_mode: ${{ inputs.execution_mode }}
+      image_mode: ${{ image_mode }}
+      additional_params: ${{ inputs.additional_params }}
       timeout_minutes: 360
