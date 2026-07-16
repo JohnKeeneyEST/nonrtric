@@ -104,7 +104,8 @@ jobs:
           echo "Triggering $test using $workflow_file..."
           
           # Trigger the workflow
-          response=$(curl -s -w "%{http_code}" -X POST \
+          echo "Triggering the action with curl: "
+          response=$(curl --no-progress-meter -w "%{http_code}" -X POST \
             -H "Authorization: token $GITHUB_TOKEN" \
             -H "Accept: application/vnd.github.v3+json" \
             "https://api.github.com/repos/${{ github.repository }}/actions/workflows/$workflow_file/dispatches" \
@@ -117,8 +118,6 @@ jobs:
                 \"additional_params\": \"${{ inputs.additional_params }}\"
               }
             }")
-
-          echo "Triggered the action with ["!:0"] with arguments ["!:*"]"
           
           # Extract HTTP status code (last 3 characters)
           http_code="${response: -3}"
@@ -128,6 +127,8 @@ jobs:
             TRIGGERED_COUNT=$((TRIGGERED_COUNT + 1))
           else
             echo "❌ Failed to trigger $test (HTTP $http_code)"
+            echo "Full reponse was:"
+            echo "$response"
             FAILED_COUNT=$((FAILED_COUNT + 1))
           fi
           
