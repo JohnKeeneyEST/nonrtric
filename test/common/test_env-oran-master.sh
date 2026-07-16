@@ -16,8 +16,8 @@
 #  limitations under the License.
 #  ============LICENSE_END=================================================
 #
-#Profile for ORAN M release
-TEST_ENV_PROFILE="ORAN-M-RELEASE"
+#Profile for master brtanch version after  N release
+TEST_ENV_PROFILE="ORAN-MASTER"
 FLAVOUR="ORAN"
 
 ########################################
@@ -28,7 +28,7 @@ FLAVOUR="ORAN"
 NEXUS_PROXY_REPO="nexus3.o-ran-sc.org:10001/"
 NEXUS_RELEASE_REPO="nexus3.o-ran-sc.org:10002/"
 NEXUS_SNAPSHOT_REPO="nexus3.o-ran-sc.org:10003/"
-NEXUS_STAGING_REPO="nexus3.o-ran-sc.org:10002/"
+NEXUS_STAGING_REPO="nexus3.o-ran-sc.org:10004/"
 
 # Nexus repos for images used by test (not developed by the project)
 NEXUS_RELEASE_REPO_ONAP="nexus3.onap.org:10002/"  # Only for released ONAP images
@@ -60,10 +60,10 @@ NEXUS_RELEASE_REPO_ORAN=$NEXUS_RELEASE_REPO
 
 # A1PMS base image and tags
 A1PMS_IMAGE_BASE="o-ran-sc/nonrtric-plt-a1policymanagementservice"
-A1PMS_IMAGE_TAG_LOCAL="2.11.0-SNAPSHOT"
-A1PMS_IMAGE_TAG_REMOTE_SNAPSHOT="2.11.0-SNAPSHOT"
-A1PMS_IMAGE_TAG_REMOTE="2.11.0"
-A1PMS_IMAGE_TAG_REMOTE_RELEASE="2.11.0"
+A1PMS_IMAGE_TAG_LOCAL="2.14.0-SNAPSHOT"
+A1PMS_IMAGE_TAG_REMOTE_SNAPSHOT="2.14.0-SNAPSHOT"
+A1PMS_IMAGE_TAG_REMOTE="2.14.0"
+A1PMS_IMAGE_TAG_REMOTE_RELEASE="2.13.0"  # n-release
 
 # ICS image and tags
 ICS_IMAGE_BASE="o-ran-sc/nonrtric-plt-informationcoordinatorservice"
