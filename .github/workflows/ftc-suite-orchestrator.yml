@@ -114,7 +114,7 @@ jobs:
               \"inputs\": {
                 \"test_env_file\": \"${{ inputs.test_env_file }}\",
                 \"execution_mode\": \"${{ inputs.execution_mode }}\",
-                \"test_env_file\": \"${{ inputs.image_mode }}\",
+                \"image_mode\": \"${{ inputs.image_mode }}\",
                 \"additional_params\": \"${{ inputs.additional_params }}\"
               }
             }")
