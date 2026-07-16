@@ -6,7 +6,7 @@ on:
       test_env_file:
         description: 'Test environment file to use'
         required: true
-        default: '../common/test_env-oran-m-release.sh'
+        default: '../common/test_env-onap-master.sh'
         type: choice
         options:
           - '../common/test_env-onap-master.sh'
