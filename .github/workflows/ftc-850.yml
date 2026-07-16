@@ -9,6 +9,9 @@ on:
         default: '../common/test_env-oran-m-release.sh'
         type: choice
         options:
+          - '../common/test_env-onap-master.sh'
+          - '../common/test_env-oran-master.sh'
+          - '../common/test_env-oran-n-release.sh'
           - '../common/test_env-oran-m-release.sh'
           - '../common/test_env-oran-l-release.sh'
           - '../common/test_env-oran-k-release.sh'
